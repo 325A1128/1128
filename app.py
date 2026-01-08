@@ -1,21 +1,14 @@
 import streamlit as st
 
-from random import randint
+from random import randint,shuffle
 
 if 'page' not in st.session_state:
     st.session_state.page = 'home'
-    
-if 'cnt' not in st.session_state:
     st.session_state.cnt = 0
-    
-if 'juu' not in st.session_state:
     st.session_state.juu = 0
-    
-if 'henkan' not in st.session_state:
-    st.session_state.henkan = 0
-    
-if 'seigo' not in st.session_state:
+    st.session_state.mon = 1
     st.session_state.seigo = ''
+    st.session_state.sentakushi = []
     
 #基数変換プログラム
 def henkan(juu,hen):
@@ -28,15 +21,6 @@ def henkan(juu,hen):
         juu = int(juu / hen)
     return ret
 
-#選択肢のボタンの位置を毎回変える
-def ran_button():
-    b_list = list()
-    while len(b_list) < 4:
-        num = randint(0,3)
-        if num not in b_list:
-            b_list.append(num)
-    return b_list
-
 #正誤判定
 def seigo(but):
     if but == st.session_state.juu:
@@ -44,240 +28,123 @@ def seigo(but):
         st.session_state.seigo = '〇正解'
     else:
         st.session_state.seigo = '✕不正解'
+
+#問題作成
+def mondai():
+    nanido = {1: (1,15),2: (16,63),3: (64,127)}
+    low,high = nanido[st.session_state.mon]
+    st.session_state.juu = randint(low,high)
+    sentaku = [st.session_state.juu,
+               st.session_state.juu+1,
+               st.session_state.juu-1,
+               st.session_state.juu+2]
+    shuffle(sentaku)
+    st.session_state.sentakushi = sentaku
         
-#ホーム画面
-def home():
+if st.session_state.page == 'home':
     st.title('基数変換クイズ')
     if st.button('10➡2'):
-        st.session_state.henkan = 2
-        st.session_state.page = 'page1'
-    if st.button('10➡8'):
-        st.session_state.henkan = 8
-        st.session_state.page = 'page1'
-    if st.button('10➡16'):
-        st.session_state.henkan = 16
-        st.session_state.page = 'page1'
-    if st.button('2➡10'):
-        st.session_state.henkan = 2
-        st.session_state.page = 'page4'
-    if st.button('8➡10'):
-        st.session_state.henkan = 8
-        st.session_state.page = 'page4'
-    if st.button('16➡10'):
-        st.session_state.henkan = 16
-        st.session_state.page = 'page4'
-    
-#問題ページ
-#一問目(10➡)
-def page1():
-    st.session_state.juu = randint(1,15)
-    st.title(st.session_state.juu)
-    but = [st.session_state.juu,
-           st.session_state.juu+1,
-           st.session_state.juu+2,
-           st.session_state.juu-1]
-    ranbut = ran_button()
-    
-    if st.button(henkan(but[ranbut[0]],st.session_state.henkan)):
-        seigo(but[ranbut[0]])
-        st.session_state.page = 'page1_ans'
-    if st.button(henkan(but[ranbut[1]],st.session_state.henkan)):
-        seigo(but[ranbut[1]])
-        st.session_state.page = 'page1_ans'
-    if st.button(henkan(but[ranbut[2]],st.session_state.henkan)):
-        seigo(but[ranbut[2]])
-        st.session_state.page = 'page1_ans'
-    if st.button(henkan(but[ranbut[3]],st.session_state.henkan)):
-        seigo(but[ranbut[3]])
-        st.session_state.page = 'page1_ans'
-
-#二問目(10➡)
-def page2():
-    st.session_state.juu = randint(16,63)
-    st.title(st.session_state.juu)
-    but = [st.session_state.juu,
-           st.session_state.juu+1,
-           st.session_state.juu+2,
-           st.session_state.juu-1]
-    ranbut = ran_button()
-    
-    if st.button(henkan(but[ranbut[0]],st.session_state.henkan)):
-        seigo(but[ranbut[0]])
-        st.session_state.page = 'page2_ans'
-    if st.button(henkan(but[ranbut[1]],st.session_state.henkan)):
-        seigo(but[ranbut[1]])
-        st.session_state.page = 'page2_ans'
-    if st.button(henkan(but[ranbut[2]],st.session_state.henkan)):
-        seigo(but[ranbut[2]])
-        st.session_state.page = 'page2_ans'
-    if st.button(henkan(but[ranbut[3]],st.session_state.henkan)):
-        seigo(but[ranbut[3]])
-        st.session_state.page = 'page2_ans'
-    
-    
-#三問目(10➡)
-def page3():
-    st.session_state.juu = randint(64,127)
-    st.title(st.session_state.juu)
-    but = [st.session_state.juu,
-           st.session_state.juu+1,
-           st.session_state.juu+2,
-           st.session_state.juu-1]
-    ranbut = ran_button()
-    
-    if st.button(henkan(but[ranbut[0]],st.session_state.henkan)):
-        seigo(but[ranbut[0]])
-        st.session_state.page = 'page3_ans'
-    if st.button(henkan(but[ranbut[1]],st.session_state.henkan)):
-        seigo(but[ranbut[1]])
-        st.session_state.page = 'page3_ans'
-    if st.button(henkan(but[ranbut[2]],st.session_state.henkan)):
-        seigo(but[ranbut[2]])
-        st.session_state.page = 'page3_ans'
-    if st.button(henkan(but[ranbut[3]],st.session_state.henkan)):
-        seigo(but[ranbut[3]])
-        st.session_state.page = 'page3_ans'
-
-#一問目(➡10)
-def page4():
-    st.session_state.juu = randint(1,15)
-    but = [st.session_state.juu,
-           st.session_state.juu+1,
-           st.session_state.juu+2,
-           st.session_state.juu-1]
-    st.title(henkan(st.session_state.juu,st.session_state.henkan))
-    ranbut = ran_button()
-    
-    if st.button(but[ranbut[0]]):
-        seigo(but[ranbut[0]])
-        st.session_state.page = 'page4_ans'
-    if st.button(but[ranbut[1]]):
-        seigo(but[ranbut[1]])
-        st.session_state.page = 'page4_ans'
-    if st.button(but[ranbut[2]]):
-        seigo(but[ranbut[2]])
-        st.session_state.page = 'page4_ans'
-    if st.button(but[ranbut[3]]):
-        seigo(but[ranbut[3]])
-        st.session_state.page = 'page4_ans'
-        
-#二問目(➡10)
-def page5():
-    st.session_state.juu = randint(16,63)
-    but = [henkan(st.session_state.juu,st.session_state.henkan),
-           henkan(st.session_state.juu+1,st.session_state.henkan),
-           henkan(st.session_state.juu+2,st.session_state.henkan),
-           henkan(st.session_state.juu-1,st.session_state.henkan)]
-    st.title(henkan(st.session_state.juu,st.session_state.henkan))
-    ranbut = ran_button()
-    
-    if st.button(but[ranbut[0]]):
-        seigo(but[ranbut[0]])
-        st.session_state.page = 'page5_ans'
-    if st.button(but[ranbut[1]]):
-        seigo(but[ranbut[1]])
-        st.session_state.page = 'page5_ans'
-    if st.button(but[ranbut[2]]):
-        seigo(but[ranbut[2]])
-        st.session_state.page = 'page5_ans'
-    if st.button(but[ranbut[3]]):
-        seigo(but[ranbut[3]])
-        st.session_state.page = 'page5_ans'
-        
-#三問目(➡10)
-def page6():
-    st.session_state.juu = randint(64,127)
-    but = [st.session_state.juu,
-           st.session_state.juu+1,
-           st.session_state.juu+2,
-           st.session_state.juu-1]
-    st.title(henkan(st.session_state.juu,st.session_state.henkan))
-    ranbut = ran_button()
-    
-    if st.button(but[ranbut[0]]):
-        seigo(but[ranbut[0]])
-        st.session_state.page = 'page6_ans'
-    if st.button(but[ranbut[1]]):
-        seigo(but[ranbut[1]])
-        st.session_state.page = 'page6_ans'
-    if st.button(but[ranbut[2]]):
-        seigo(but[ranbut[2]])
-        st.session_state.page = 'page6_ans'
-    if st.button(but[ranbut[3]]):
-        seigo(but[ranbut[3]])
-        st.session_state.page = 'page6_ans'
-        
-#答えページ
-def page1_ans():
-    st.title(st.session_state.seigo)
-    st.title(f'{st.session_state.juu}➡{henkan(st.session_state.juu,2)}')
-    if st.button('次へ'):
-        st.session_state.page = 'page2'
-        
-def page2_ans():
-    st.title(st.session_state.seigo)
-    st.title(f'{st.session_state.juu}➡{henkan(st.session_state.juu,2)}')
-    if st.button('次へ'):
-        st.session_state.page = 'page3'
-        
-def page3_ans():
-    st.title(st.session_state.seigo)
-    st.title(f'{st.session_state.juu}➡{henkan(st.session_state.juu,2)}')
-    if st.button('次へ'):
-        st.session_state.page = 'page7'
-        
-def page4_ans():
-    st.title(st.session_state.seigo)
-    st.title(f'{st.session_state.juu}➡{henkan(st.session_state.juu,2)}')
-    if st.button('次へ'):
-        st.session_state.page = 'page5'
-        
-def page5_ans():
-    st.title(st.session_state.seigo)
-    st.title(f'{st.session_state.juu}➡{henkan(st.session_state.juu,2)}')
-    if st.button('次へ'):
-        st.session_state.page = 'page6'
-
-def page6_ans():
-    st.title(st.session_state.seigo)
-    st.title(f'{st.session_state.juu}➡{henkan(st.session_state.juu,2)}')
-    if st.button('次へ'):
-        st.session_state.page = 'page7'
-        
-#最終結果ページ
-def page7():
-    st.title('結果')
-    st.write(f'{st.session_state.cnt}/3!')
-    if st.button('ホームに戻る'):
         st.session_state.cnt = 0
-        st.session_state.page = 'home'
+        st.session_state.mon = 1
+        mondai()
+        st.session_state.henkan = 2
+        st.session_state.page = 'p1'
+        st.rerun()
+    if st.button('10➡8'):
+        st.session_state.cnt = 0
+        st.session_state.mon = 1
+        mondai()
+        st.session_state.henkan = 8
+        st.session_state.page = 'p1'
+        st.rerun()
+    if st.button('10➡16'):
+        st.session_state.cnt = 0
+        st.session_state.mon = 1
+        mondai()
+        st.session_state.henkan = 16
+        st.session_state.page = 'p1'
+        st.rerun()
+    if st.button('2➡10'):
+        st.session_state.cnt = 0
+        st.session_state.mon = 1
+        mondai()
+        st.session_state.henkan = 2
+        st.session_state.page = 'p2'
+        st.rerun()
+    if st.button('8➡10'):
+        st.session_state.cnt = 0
+        st.session_state.mon = 1
+        mondai()
+        st.session_state.henkan = 8
+        st.session_state.page = 'p2'
+        st.rerun()
+    if st.button('16➡10'):
+        st.session_state.cnt = 0
+        st.session_state.mon = 1
+        mondai()
+        st.session_state.henkan = 16
+        st.session_state.page = 'p2'
+        st.rerun()
         
-#メイン実行文
-if st.session_state.page == 'home':
-    home()
-elif st.session_state.page == 'page1':
-    page1()
-elif st.session_state.page == 'page1_ans':
-    page1_ans()
-elif st.session_state.page == 'page2':
-    page2()
-elif st.session_state.page == 'page2_ans':
-    page2_ans()
-elif st.session_state.page == 'page3':
-    page3()
-elif st.session_state.page == 'page3_ans':
-    page3_ans()
-elif st.session_state.page == 'page4':
-    page4()
-elif st.session_state.page == 'page4_ans':
-    page4_ans()
-elif st.session_state.page == 'page5':
-    page5()
-elif st.session_state.page == 'page5_ans':
-    page5_ans()
-elif st.session_state.page == 'page6':
-    page6()
-elif st.session_state.page == 'page6_ans':
-    page6_ans()
-elif st.session_state.page == 'page7':
-    page7()
+elif st.session_state.page == 'p1':
+    st.title(st.session_state.juu)
+    
+    for n in st.session_state.sentakushi:
+        if st.button(henkan(n,st.session_state.henkan),key=f'p1{n}'):
+            if n == st.session_state.juu:
+                st.session_state.seigo = '〇正解'
+                st.session_state.cnt += 1
+            else:
+                st.session_state.seigo = '✕不正解'
+            st.session_state.page = 'p1_ans'
+            st.rerun()
+            
+elif st.session_state.page == 'p2':
+    st.title(henkan(st.session_state.juu,st.session_state.henkan))
+    
+    for n in st.session_state.sentakushi:
+        if st.button(str(n),key=f'p2{n}'):
+            if n == st.session_state.juu:
+                st.session_state.seigo = '〇正解'
+                st.session_state.cnt += 1
+            else:
+                st.session_state.seigo = '✕不正解'
+            st.session_state.page = 'p2_ans'
+            st.rerun()
+
+elif st.session_state.page == 'p1_ans':
+    st.title(st.session_state.seigo)
+    st.write(f'10進数:{st.session_state.juu}')
+    st.write('↓')
+    st.write(f'{st.session_state.henkan}進数:{henkan(st.session_state.juu,2)}')
+    if st.session_state.mon < 3:
+        if st.button('次の問題へ'):
+            st.session_state.mon += 1
+            mondai()
+            st.session_state.page = 'p1'
+    else:
+        if st.button('結果'):
+            st.session_state.page = 'p3'
+    st.rerun()
+            
+elif st.session_state.page == 'p2_ans':
+    st.title(st.session_state.seigo)
+    st.write(f'{st.session_state.henkan}進数:{henkan(st.session_state.juu,2)}')
+    st.write('↓')
+    st.write(f'10進数:{st.session_state.juu}')
+    if st.session_state.mon < 3:
+        if st.button('次の問題へ'):
+            st.session_state.mon += 1
+            mondai()
+            st.session_state.page = 'p2'
+    else:
+        if st.button('結果'):
+            st.session_state.page = 'p3'
+    st.rerun()
+            
+elif st.session_state.page == 'p3':
+    st.title('結果')
+    st.write(f'{st.session_state.cnt}/3問正解')
+    if st.button('ホームに戻る'):
+        st.session_state.page = 'home'
+        st.rerun()
